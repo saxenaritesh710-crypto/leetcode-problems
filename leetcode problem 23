@@ -1,0 +1,65 @@
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+    push(node) {
+        this.heap.push(node);
+        this._heapifyUp();
+    }
+    pop() {
+        if (this.heap.length === 0) return null;
+        const min = this.heap[0];
+        const end = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = end;
+            this._heapifyDown();
+        }
+        return min;
+    }
+    _heapifyUp() {
+        let idx = this.heap.length - 1;
+        while (idx > 0) {
+            let parentIdx = Math.floor((idx - 1) / 2);
+            if (this.heap[idx].val >= this.heap[parentIdx].val) break;
+            [this.heap[idx], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[idx]];
+            idx = parentIdx;
+        }
+    }
+    _heapifyDown() {
+        let idx = 0;
+        const length = this.heap.length;
+        while (true) {
+            let left = 2 * idx + 1;
+            let right = 2 * idx + 2;
+            let smallest = idx;
+            if (left < length && this.heap[left].val < this.heap[smallest].val) smallest = left;
+            if (right < length && this.heap[right].val < this.heap[smallest].val) smallest = right;
+            if (smallest === idx) break;
+
+            [this.heap[idx], this.heap[smallest]] = [this.heap[smallest], this.heap[idx]];
+            idx = smallest;
+        }
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+}
+var mergeKLists = function(lists) {
+    const heap = new MinHeap();
+    for (let node of lists) {
+        if (node) heap.push(node);
+    }
+
+    const dummy = new ListNode(0);
+    let curr = dummy;
+
+    while (!heap.isEmpty()) {
+        let minNode = heap.pop();
+        curr.next = minNode;
+        curr = curr.next;
+        if (minNode.next) heap.push(minNode.next);
+    }
+
+    return dummy.next;
+};
