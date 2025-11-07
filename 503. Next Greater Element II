@@ -1,0 +1,25 @@
+class Solution {
+    public int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        // initialize all answers to -1
+        Arrays.fill(ans, -1);
+
+        Deque<Integer> stack = new ArrayDeque<>();
+        // loop twice to simulate circular array
+        for (int i = 0; i < 2 * n; i++) {
+            int currentIndex = i % n;
+            int currentValue = nums[currentIndex];
+            // resolve any indices in stack whose next greater is currentValue
+            while (!stack.isEmpty() && nums[stack.peek()] < currentValue) {
+                int idx = stack.pop();
+                ans[idx] = currentValue;
+            }
+            // only push indices during first pass
+            if (i < n) {
+                stack.push(currentIndex);
+            }
+        }
+        return ans;
+    }
+}
