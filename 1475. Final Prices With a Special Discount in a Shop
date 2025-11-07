@@ -1,0 +1,27 @@
+class Solution {
+    public int[] finalPrices(int[] prices) {
+        int n = prices.length;
+        int[] ans = new int[n];
+        // Copy original prices into the answer array
+        for (int i = 0; i < n; i++) {
+            ans[i] = prices[i];
+        }
+        // Stack to hold indices of items whose discount hasn’t been found yet
+        Deque<Integer> stack = new ArrayDeque<>();
+        
+        for (int i = 0; i < n; i++) {
+            // While there are items in the stack and the current price
+            // is <= the price at the top index of the stack:
+            // then current price qualifies as a discount for that index
+            while (!stack.isEmpty() && prices[i] <= prices[stack.peek()]) {
+                int idx = stack.pop();
+                ans[idx] = prices[idx] - prices[i];
+            }
+            // Push current index into stack to await its discount
+            stack.push(i);
+        }
+        
+        // Items left in stack get no discount → their ans remains original price
+        return ans;
+    }
+}
